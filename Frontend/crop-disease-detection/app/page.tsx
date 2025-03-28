@@ -3,6 +3,7 @@
 import type React from "react";
 
 import { useState } from "react";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -27,7 +28,6 @@ interface PredictionResult {
 
 export default function Home() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [fileName, setFileName] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<PredictionResult | null>(null);
@@ -35,7 +35,6 @@ export default function Home() {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setFileName(file.name);
       const reader = new FileReader();
       reader.onload = () => {
         setSelectedImage(reader.result as string);
@@ -55,17 +54,19 @@ export default function Home() {
     try {
       // Create a FormData object to send the actual image file
       const formData = new FormData();
-      
+
       // Get the file from the input element
-      const fileInput = document.getElementById('image-upload') as HTMLInputElement;
+      const fileInput = document.getElementById(
+        "image-upload"
+      ) as HTMLInputElement;
       const file = fileInput.files?.[0];
-      
+
       if (!file) {
         throw new Error("No file selected");
       }
-      
+
       // Append the file to the FormData object
-      formData.append('file', file);
+      formData.append("file", file);
 
       const response = await fetch("http://localhost:8000/predict", {
         method: "POST",
@@ -127,10 +128,12 @@ export default function Home() {
           {selectedImage && (
             <div className="flex flex-col items-center">
               <div className="relative w-full max-w-md h-64 overflow-hidden rounded-lg">
-                <img
+                <Image
                   src={selectedImage || "/placeholder.svg"}
                   alt="Selected crop"
-                  className="object-contain w-full h-full"
+                  fill
+                  className="object-contain"
+                  unoptimized={selectedImage?.startsWith("data:")}
                 />
               </div>
               <Button
