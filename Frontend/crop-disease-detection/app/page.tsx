@@ -68,11 +68,14 @@ export default function Home() {
       // Append the file to the FormData object
       formData.append("file", file);
 
-      const response = await fetch("http://localhost:8000/predict", {
-        method: "POST",
-        // Don't set Content-Type header when using FormData, it will be set automatically
-        body: formData,
-      });
+      const response = await fetch(
+        "https://crop-disease-detection-backend-e3f1654a77a0.herokuapp.com/predict",
+        {
+          method: "POST",
+          // Don't set Content-Type header when using FormData, it will be set automatically
+          body: formData,
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to get prediction");
